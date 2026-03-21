@@ -1,7 +1,10 @@
-import { describe, it, expect, beforeEach, afterEach } from "@jest/globals";
+import { jest, describe, it, expect, beforeEach, afterEach } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
+
+global.fetch = jest.fn();
+global.alert = jest.fn();
 
 import Header from "../components/Header";
 import Gallery from "../components/Gallery";
@@ -56,13 +59,16 @@ describe("App Integration", () => {
       expect(screen.getByText(/No dishes yet/i)).toBeInTheDocument()
     );
 
-    await user.click(screen.getByText("+"));
+    // FIX: Changed from getByText("+") to getByAltText(/Add Dish/i) to match the new image icon
+    await user.click(screen.getByAltText(/Add Dish/i));
 
     await waitFor(() =>
       expect(screen.getByText(/Add a New Favorite Dish/i)).toBeInTheDocument()
     );
 
     await user.type(screen.getByPlaceholderText(/Cheese Burger/i), "Burger");
+
+    await user.type(screen.getByPlaceholderText(/That One Place/i), "Test Restaurant");
 
     await user.click(screen.getByRole("button", { name: /Add to Gallery/i }));
 

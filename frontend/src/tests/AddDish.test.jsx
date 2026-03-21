@@ -1,8 +1,11 @@
 import { jest, describe, it, expect, beforeEach } from "@jest/globals";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddDish from "../components/AddDish";
 import { MemoryRouter } from "react-router-dom";
+
+global.fetch = jest.fn();
+global.alert = jest.fn();
 
 // Mock navigate
 const mockNavigate = jest.fn();
@@ -29,11 +32,16 @@ describe("AddDish", () => {
     );
 
     await user.type(screen.getByPlaceholderText(/Cheese Burger/i), "Burger");
+    // Filling out required Restaurant Name to ensure form validation passes
+    await user.type(screen.getByPlaceholderText(/e.g. That One Place/i), "The Burger Joint");
+    
     await user.click(screen.getByRole("button", { name: /Add to Gallery/i }));
 
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(alert).toHaveBeenCalledWith("Dish added successfully!");
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(alert).toHaveBeenCalledWith("Dish added successfully!");
+      expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
   });
 
   it("shows error if request fails", async () => {
@@ -50,11 +58,16 @@ describe("AddDish", () => {
     );
 
     await user.type(screen.getByPlaceholderText(/Cheese Burger/i), "Burger");
+    // Filling out required Restaurant Name to ensure form validation passes
+    await user.type(screen.getByPlaceholderText(/e.g. That One Place/i), "The Burger Joint");
+
     await user.click(screen.getByRole("button", { name: /Add to Gallery/i }));
 
-    expect(alert).toHaveBeenCalledWith(
-      "Error adding dish. Check if backend is running on port 3000!"
-    );
+    await waitFor(() => {
+      expect(alert).toHaveBeenCalledWith(
+        "Error adding dish. Check if backend is running on port 3000!"
+      );
+    });
 
     consoleSpy.mockRestore(); // restore normal behavior after test
   });

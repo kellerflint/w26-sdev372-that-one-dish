@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules
+npm-debug.log
+
+# Environment variables
+.env
+
+# Git files
+.git
+.gitignore
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Build/Dev folders
+dist
+build

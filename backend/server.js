@@ -14,7 +14,13 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use('/api/dishes', dishesRoutes);
 
-const PORT = process.env.PORT;
+app.use(express.static(path.join(process.cwd(), "dist")));
+
+app.get(/^(?!\/api).+/, (req, res) => {
+  res.sendFile(path.join(process.cwd(), "dist", "index.html"));
+});
+
+const PORT = process.env.PORT || 3000;
 
 if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {

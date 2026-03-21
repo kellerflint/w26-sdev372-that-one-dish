@@ -88,17 +88,6 @@ input:focus, textarea:focus {
   outline: none;
   border-color: #ff5e6b;
 }
-
-.submit-button {
-  width: 100%;
-  padding: 15px;
-  background-color: #ff4757;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
 ... (101 lines left)
 Collapse
 index.css

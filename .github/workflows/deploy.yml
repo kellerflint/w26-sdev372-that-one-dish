@@ -1,0 +1,47 @@
+name: Deploy That One Dish
+
+on:
+  push:
+    # Trigger only on a successful merge to the main branch
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Automated Deployment
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:deploy
+
+      - name: Deploy via SSH
+        # Connect to the VM via SSH with necessary secrets configured in GitHub
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the project directory
+            cd ${{ secrets.THAT_ONE_DISH_PATH }}
+            
+            # Pull the latest code on the VM
+            git pull origin main
+            
+            # Restart application services
+            docker compose up --build -d
+            
+            # Clean up old, unused images to save disk space
+            docker image prune -f
+            
+            # Verify deployment success
+            echo "Checking container status..."
+            docker ps
+            echo "Deployment successful."

@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import DishImage from "../assets/DishImage.png";
+import PlusIcon from "../assets/PlusIcon.png";
 
 function AddDish() {
   const [formData, setFormData] = useState({
@@ -11,8 +12,10 @@ function AddDish() {
     restaurant_address: "",
     image: null
   });
+  const [imagePreview, setImagePreview] = useState(null);
   const [origin, setOrigin] = useState("restaurant");
-
+  const fileInputRef = useRef(null);
+  
   useEffect(() => {
     if (origin === "home") {
       setFormData((prev) => ({
@@ -26,27 +29,42 @@ function AddDish() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    if (e.target.name === "image") {
+      const file = e.target.files[0];
+      setFormData({
+        ...formData,
+        image: file
+      });
+      if (file) {
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreview(previewUrl);
+      }
+    } else {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formPayload = new FormData();
+
     formPayload.append("dish_name", formData.dish_name);
     formPayload.append("cuisine", formData.cuisine);
     formPayload.append("dish_details", formData.dish_details);
     formPayload.append("restaurant_name", formData.restaurant_name);
     formPayload.append("restaurant_address", formData.restaurant_address);
+
     if (formData.image) {
       formPayload.append("image", formData.image);
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/dishes", {
+
+      const res = await fetch("http://100.117.135.17:3000/api/dishes", {
         method: "POST",
         body: formPayload
       });
@@ -67,6 +85,31 @@ function AddDish() {
 
       <form onSubmit={handleSubmit} className="dish-form">
         <div className="form-group">
+          <label className="label-center">Upload Photo</label>
+          <div 
+            className="image-box"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {imagePreview ? (
+              <img src={imagePreview} alt="Preview" />
+            ) : (
+              <div className="placeholder-container">
+                <img src={PlusIcon} alt="Plus Icon" className="placeholder" />
+                <img src={DishImage} alt="Placeholder" className="placeholder-image" />
+              </div>
+            )}
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            name="image"
+            accept="image/*"
+            className="hidden-input"
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="form-group">
           <label>Dish Name</label>
           <input
             name="dish_name"
@@ -85,6 +128,7 @@ function AddDish() {
               onChange={handleChange}
             />
           </div>
+
           <div className="form-group">
             <label>Where did you have this dish?</label>
             <label>
@@ -109,11 +153,11 @@ function AddDish() {
               Home made
             </label>
           </div>
+
         </div>
 
         {origin === "restaurant" && (
-        <>
-          <div className="form-row">
+          <>
             <div className="form-group">
               <label>Restaurant Name</label>
               <input
@@ -123,17 +167,16 @@ function AddDish() {
                 required
               />
             </div>
-          </div>
-
-          <div className="form-group">
-            <label>Restaurant Address</label>
-            <input
-              name="restaurant_address"
-              placeholder="123 Street, City, State"
-              onChange={handleChange}
-            />
-          </div>
-        </>)}
+            <div className="form-group">
+              <label>Restaurant Address</label>
+              <input
+                name="restaurant_address"
+                placeholder="123 Street, City, State"
+                onChange={handleChange}
+              />
+            </div>
+          </>
+        )}
 
         <div className="form-group">
           <label>Dish Details</label>
@@ -145,22 +188,14 @@ function AddDish() {
           />
         </div>
 
-        <div className="form-group">
-          <label>Upload Image</label>
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            className="file-input"
-            onChange={(e) =>
-              setFormData({ ...formData, image: e.target.files[0] })
-            }
-          />
+        <div className="form-actions">
+          <button className="button-secondary" type="button" onClick={() => navigate("/")}>
+            Cancel
+          </button>
+          <button className="submit-button" type="submit">
+            Add to Gallery
+          </button>
         </div>
-
-        <button className="submit-button" type="submit">
-        Add to Gallery
-        </button>
       </form>
     </div>
   );

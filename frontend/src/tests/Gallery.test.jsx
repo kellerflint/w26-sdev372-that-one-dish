@@ -1,6 +1,9 @@
-import { describe, it, expect, beforeEach } from "@jest/globals";
+import { describe, it, expect, beforeEach, jest } from "@jest/globals";
 import { render, screen, waitFor } from "@testing-library/react";
 import Gallery from "../components/Gallery";
+import { MemoryRouter } from "react-router-dom";
+
+global.fetch = jest.fn();
 
 describe("Gallery", () => {
   beforeEach(() => {
@@ -10,7 +13,11 @@ describe("Gallery", () => {
   it("shows placeholder when no dishes", async () => {
     fetch.mockResolvedValueOnce({ ok: true, json: async () => [] });
 
-    render(<Gallery />);
+    render(
+      <MemoryRouter>
+        <Gallery />
+      </MemoryRouter>
+    );
 
     await waitFor(() =>
       expect(screen.getByText(/No dishes yet/i)).toBeInTheDocument()
@@ -33,7 +40,11 @@ describe("Gallery", () => {
       ],
     });
 
-    render(<Gallery />);
+    render(
+      <MemoryRouter>
+        <Gallery />
+      </MemoryRouter>
+    );
 
     await waitFor(() => expect(screen.getByText("Pizza")).toBeInTheDocument());
     expect(screen.getByText("Italian")).toBeInTheDocument();

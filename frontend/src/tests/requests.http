@@ -3,7 +3,7 @@
 ###############################################################################
 
 ### Check API Server Status
-GET http://localhost:3000/api/status
+GET http://100.117.135.17:3000/api/status
 
 
 ###############################################################################
@@ -11,7 +11,7 @@ GET http://localhost:3000/api/status
 ###############################################################################
 
 ### Get All Dishes (Used in Gallery component)
-GET http://localhost:3000/api/dishes
+GET http://100.117.135.17:3000/api/dishes
 
 
 ###############################################################################
@@ -19,7 +19,7 @@ GET http://localhost:3000/api/dishes
 ###############################################################################
 
 ### Add Dish (Restaurant Origin)
-POST http://localhost:3000/api/dishes
+POST http://100.117.135.17:3000/api/dishes
 Content-Type: application/json
 
 {
@@ -32,7 +32,7 @@ Content-Type: application/json
 
 
 ### Add Dish (Home Made)
-POST http://localhost:3000/api/dishes
+POST http://100.117.135.17:3000/api/dishes
 Content-Type: application/json
 
 {
@@ -49,7 +49,7 @@ Content-Type: application/json
 ###############################################################################
 
 ### Upload Dish With Image
-POST http://localhost:3000/api/dishes
+POST http://100.117.135.17:3000/api/dishes
 Content-Type: multipart/form-data; boundary=boundary
 
 --boundary
@@ -85,4 +85,4 @@ Content-Type: image/jpeg
 ###############################################################################
 
 ### Check dishes again to confirm new entry appears
-GET http://localhost:3000/api/dishes
+GET http://100.117.135.17:3000/api/dishes

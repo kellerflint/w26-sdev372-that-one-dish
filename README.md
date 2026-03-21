@@ -69,7 +69,42 @@ restaurant
 and personal notes.
 6. The user saves the entry.
 7. The dish appears in the user’s gallery view.
+## Automated Testing Pipeline
 
+The project uses a GitHub Actions workflow defined in [`.github/workflows/test.yml`](.github/workflows/test.yml) to automatically run all tests.
+
+### Triggers
+The workflow runs on:
+- Every **push** to `main` or `feature`
+- Every **pull request** targeting `main`
+
+### Jobs
+
+| Job | What it runs |
+|-----|-------------|
+| **Backend Unit Tests** | `npm test` in `backend/` — tests the Express API routes using a mocked database (no live DB required) |
+| **Frontend Unit Tests** | Jest tests matching `AddDish.test`, `Gallery.test`, and `Header.test` — isolated component tests |
+| **Integration Tests** | Jest tests matching `Integration.test` — tests multi-component user flows with routing |
+| **End-to-End Tests** | Runs the full frontend Jest suite (unit + integration) as comprehensive app coverage; a dedicated framework such as Playwright can be added in a future iteration |
+
+### Failure behavior
+Each category is a separate job. If any single job fails, the entire workflow is marked as failed and the pull request cannot be merged (when branch protection is enabled). All results are visible in the **Actions** tab on GitHub.
+
+### Running tests locally
+
+```bash
+# Backend unit tests
+cd backend && npm test
+
+# Frontend unit tests only
+cd frontend && npm test -- --testPathPattern="(AddDish|Gallery|Header)\.test"
+
+# Integration tests only
+cd frontend && npm test -- --testPathPattern="Integration\.test"
+
+# All frontend tests
+cd frontend && npm test
+```
 **Create a Dish Entry (Inspiration / Home Dish)**
 1. The user signs in to the app.
 2. The user clicks “Add Dish”.
@@ -79,3 +114,7 @@ and personal notes.
 recipe).
 6. The user saves the entry.
 7. The dish appears in the user’s gallery view.
+
+## CI/CD Pipeline
+-Testing: Every push to `main` or `feature` triggers Jest tests for Backend and Frontend.
+-Deployment: Successful merges to `main` trigger an automated deployment to an Orange Pi via Tailscale SSH.

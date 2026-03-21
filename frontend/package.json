@@ -42,22 +42,40 @@
     "gh-pages": "^5.0.0"
   },
   "jest": {
-    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.js"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.js"
+    ],
     "testEnvironment": "jest-environment-jsdom",
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest"
     },
-    "moduleFileExtensions": ["js", "jsx", "json", "node"]
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "^../assets/(.*)$": "<rootDir>/src/assets/$1"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   },
   "eslintConfig": {
-    "extends": ["eslint:recommended", "plugin:react-hooks/recommended", "plugin:react-refresh/recommended"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:react-refresh/recommended"
+    ],
     "env": {
       "browser": true,
       "es2020": true
     },
     "overrides": [
       {
-        "files": ["**/*.test.js", "**/*.spec.js"],
+        "files": [
+          "**/*.test.js",
+          "**/*.spec.js"
+        ],
         "env": {
           "jest": true
         },
@@ -74,7 +92,12 @@
       }
     },
     "rules": {
-      "no-unused-vars": ["error", { "varsIgnorePattern": "^[A-Z_]" }]
+      "no-unused-vars": [
+        "error",
+        {
+          "varsIgnorePattern": "^[A-Z_]"
+        }
+      ]
     }
   }
 }
